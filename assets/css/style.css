@@ -1,0 +1,22 @@
+body {
+	padding: 40px;
+}
+
+.template {
+	max-width: 720px;
+	min-height: 200px;
+	margin: 0 auto;
+	padding: 20px;
+	text-align: center;
+	background: #FCFCFC;
+	border: 1px solid #DDD;
+	border-radius: 4px;
+}
+
+input,
+button {
+	width: 100%;
+	max-width: 220px;
+	display: block;
+	margin: 0 auto 5px;
+}
