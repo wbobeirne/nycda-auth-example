@@ -31,8 +31,18 @@ app.get("/signup", function(req, res) {
 });
 
 app.post("/signup", function(req, res) {
-	renderTemplate(res, "Signup", "signup", {
-		error: "Signup not yet implemented!",
+	User.create({
+		username: req.body.username,
+		password: req.body.password,
+	})
+	.then(function(user) {
+		req.session.user = user;
+		res.redirect("/home");
+	})
+	.catch(function(err) {
+		renderTemplate(res, "Signup", "signup", {
+			error: "Invalid username or password",
+		});
 	});
 });
 
@@ -42,15 +52,41 @@ app.get("/login", function(req, res) {
 });
 
 app.post("/login", function(req, res) {
-	renderTemplate(res, "Login", "login", {
-		error: "Login not yet implemented!",
+	User.findOne({
+		where: {
+			username: req.body.username,
+		},
+	})
+	.then(function(user) {
+		if (user) {
+			if (user.password === req.body.password) {
+				req.session.user = user;
+				res.redirect("/home");
+			}
+			else {
+				renderTemplate(res, "Login", "login", {
+					error: "Incorrect password",
+				});
+			}
+		}
+		else {
+			renderTemplate(res, "Login", "login", {
+				error: "Username not found",
+			});
+		}
+	})
+	.catch(function(err) {
+		console.log(err);
+		renderTemplate(res, "Login", "login", {
+			error: "The database exploded, please try again"
+		});
 	});
 });
 
 
 app.get("/home", function(req, res) {
 	renderTemplate(res, "Home", "home", {
-		username: "[insert username here]",
+		username: req.session.user.username,
 	});
 });
 
